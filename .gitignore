@@ -1,0 +1,25 @@
+# Terraform state
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+
+# Local .tfvars files
+*.tfvars
+*.tfvars.json
+
+# IDE/editor files
+.vscode/
+.idea/
+.DS_Store
+
+# OS files
+Thumbs.db
+
+# Python cache (if any Lambda code)
+__pycache__/
+*.pyc
+
+# Node modules (if any Lambda code)
+node_modules/
