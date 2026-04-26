@@ -36,6 +36,7 @@ Detailed AWS resource relationships, interaction matrix, and diagram are documen
    `npx -y @mermaid-js/mermaid-cli -i docs/aws-resource-interactions.mmd -o docs/aws-resource-interactions-diagram.png -b white -t default`
 4. (Optional) Or use Make:
    `make diagram`
+5. Lambda ZIPs are built automatically by Terraform from `lambda/producer` and `lambda/consumer` during plan/apply.
 
 ## Notes
 

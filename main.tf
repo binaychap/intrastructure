@@ -5,12 +5,28 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.0"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = ">= 2.4.0"
+    }
   }
 }
 
 
 provider "aws" {
   region = var.aws_region
+}
+
+data "archive_file" "producer_lambda_zip" {
+  type        = "zip"
+  source_dir  = var.producer_lambda_source_dir
+  output_path = "${path.root}/producer-lambda.zip"
+}
+
+data "archive_file" "consumer_lambda_zip" {
+  type        = "zip"
+  source_dir  = var.consumer_lambda_source_dir
+  output_path = "${path.root}/consumer-lambda.zip"
 }
 
 module "network" {
@@ -31,7 +47,7 @@ module "consumer_lambda_role" {
 module "producer_lambda" {
   source = "./modules/producer_lambda"
   lambda_role_arn        = module.producer_lambda_role.role_arn
-  lambda_zip             = var.producer_lambda_zip
+  lambda_zip             = data.archive_file.producer_lambda_zip.output_path
   environment_variables  = {
     SQS_QUEUE_URL = module.sqs.queue_url
   }
@@ -52,7 +68,7 @@ module "sqs" {
 module "consumer_lambda" {
   source = "./modules/consumer_lambda"
   lambda_role_arn        = module.consumer_lambda_role.role_arn
-  lambda_zip             = var.consumer_lambda_zip
+  lambda_zip             = data.archive_file.consumer_lambda_zip.output_path
   environment_variables  = {
     DYNAMODB_TABLE_NAME = module.dynamodb.table_name
   }

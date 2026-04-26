@@ -4,6 +4,7 @@ resource "aws_lambda_function" "this" {
   runtime       = "nodejs18.x"
   role          = var.lambda_role_arn
   filename      = var.lambda_zip
+  source_code_hash = filebase64sha256(var.lambda_zip)
   environment {
     variables = var.environment_variables
   }
