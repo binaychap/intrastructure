@@ -54,7 +54,7 @@ module "consumer_lambda" {
   environment_variables  = {
     DYNAMODB_TABLE_NAME = module.dynamodb.table_name
   }
-  sqs_arn                = module.sqs.queue_url # Replace with correct SQS ARN output if needed
+  sqs_arn                = module.sqs.queue_arn
 }
 
 module "dynamodb" {
