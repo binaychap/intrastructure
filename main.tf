@@ -23,6 +23,7 @@ module "producer_lambda_role" {
 
 module "consumer_lambda_role" {
   source = "./modules/consumer_lambda_role"
+  sqs_arn = module.sqs.queue_arn
 }
 
 
@@ -40,7 +41,7 @@ module "producer_lambda" {
   environment_variables  = {
     SQS_QUEUE_URL = module.sqs.queue_url
   }
-  alb_arn                = module.alb.dns_name # Replace with correct ALB ARN output if needed
+  alb_arn                = module.alb.target_group_arn
 }
 
 module "sqs" {
