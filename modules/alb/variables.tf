@@ -9,3 +9,7 @@ variable "security_groups" {
 variable "vpc_id" {
   type = string
 }
+
+variable "producer_lambda_arn" {
+  type = string
+}

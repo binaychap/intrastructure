@@ -9,14 +9,6 @@ resource "aws_lambda_function" "this" {
   }
 }
 
-resource "aws_lambda_permission" "alb_invoke" {
-  statement_id  = "AllowExecutionFromALB"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.this.function_name
-  principal     = "elasticloadbalancing.amazonaws.com"
-  source_arn    = var.alb_arn
-}
-
 output "lambda_arn" {
   value = aws_lambda_function.this.arn
 }

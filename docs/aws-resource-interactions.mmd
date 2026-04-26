@@ -1,0 +1,51 @@
+flowchart LR
+  Internet((Internet Client))
+
+  subgraph AWS[AWS Account]
+    subgraph Net[Network]
+      VPC[VPC]
+      SubnetA[Public Subnet A]
+      SubnetB[Public Subnet B]
+      IGW[Internet Gateway]
+      RT[Public Route Table]
+      SG[ALB Security Group]
+    end
+
+    ALB[Application Load Balancer]
+    LSN[ALB HTTP Listener :80]
+    TG[ALB Lambda Target Group]
+
+    PRole[IAM Role: producer-lambda-role]
+    PFn[Lambda: producer-lambda]
+    Perm[Lambda Permission\nprincipal=elasticloadbalancing.amazonaws.com]
+
+    Queue[SQS Queue]
+
+    CRole[IAM Role: consumer-lambda-role]
+    CPolicy[Inline IAM Policy:\nReceive/Delete/Attributes/Visibility]
+    CFn[Lambda: consumer-lambda]
+    ESM[Lambda Event Source Mapping]
+
+    DDB[DynamoDB Table]
+  end
+
+  Internet --> ALB
+
+  VPC --> SubnetA
+  VPC --> SubnetB
+  VPC --> SG
+  VPC --> RT
+  RT --> IGW
+  SubnetA --> ALB
+  SubnetB --> ALB
+  SG --> ALB
+
+  ALB --> LSN --> TG
+  TG --> Perm --> PFn
+  PRole --> PFn
+
+  PFn -->|SendMessage| Queue
+  Queue --> ESM --> CFn
+  CRole --> CFn
+  CPolicy --> CRole
+  CFn -->|PutItem/UpdateItem| DDB

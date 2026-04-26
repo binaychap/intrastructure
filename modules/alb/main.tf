@@ -24,6 +24,21 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+resource "aws_lambda_permission" "alb_invoke" {
+  statement_id  = "AllowExecutionFromALB"
+  action        = "lambda:InvokeFunction"
+  function_name = var.producer_lambda_arn
+  principal     = "elasticloadbalancing.amazonaws.com"
+  source_arn    = aws_lb_target_group.lambda.arn
+}
+
+resource "aws_lb_target_group_attachment" "producer_lambda" {
+  target_group_arn = aws_lb_target_group.lambda.arn
+  target_id        = var.producer_lambda_arn
+
+  depends_on = [aws_lambda_permission.alb_invoke]
+}
+
 output "dns_name" {
   value = aws_lb.this.dns_name
 }

@@ -27,13 +27,6 @@ module "consumer_lambda_role" {
 }
 
 
-module "alb" {
-  source = "./modules/alb"
-  vpc_id          = module.network.vpc_id
-  subnets         = module.network.public_subnets
-  security_groups = [module.network.alb_security_group_id]
-}
-
 module "producer_lambda" {
   source = "./modules/producer_lambda"
   lambda_role_arn        = module.producer_lambda_role.role_arn
@@ -41,7 +34,14 @@ module "producer_lambda" {
   environment_variables  = {
     SQS_QUEUE_URL = module.sqs.queue_url
   }
-  alb_arn                = module.alb.target_group_arn
+}
+
+module "alb" {
+  source = "./modules/alb"
+  vpc_id               = module.network.vpc_id
+  subnets              = module.network.public_subnets
+  security_groups      = [module.network.alb_security_group_id]
+  producer_lambda_arn  = module.producer_lambda.lambda_arn
 }
 
 module "sqs" {

@@ -10,7 +10,3 @@ variable "environment_variables" {
   type    = map(string)
   default = {}
 }
-
-variable "alb_arn" {
-  type = string
-}
