@@ -17,6 +17,24 @@ resource "aws_iam_role_policy_attachment" "basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_role_policy" "sqs_send" {
+  name = "producer-lambda-sqs-send"
+  role = aws_iam_role.this.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sqs:SendMessage"
+        ]
+        Resource = var.sqs_arn
+      }
+    ]
+  })
+}
+
 output "role_arn" {
   value = aws_iam_role.this.arn
 }

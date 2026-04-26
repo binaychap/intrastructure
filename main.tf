@@ -19,6 +19,7 @@ module "network" {
 
 module "producer_lambda_role" {
   source = "./modules/producer_lambda_role"
+  sqs_arn = module.sqs.queue_arn
 }
 
 module "consumer_lambda_role" {
