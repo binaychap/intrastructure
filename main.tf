@@ -17,6 +17,14 @@ module "network" {
   source = "./modules/network"
 }
 
+module "producer_lambda_role" {
+  source = "./modules/producer_lambda_role"
+}
+
+module "consumer_lambda_role" {
+  source = "./modules/consumer_lambda_role"
+}
+
 
 module "alb" {
   source = "./modules/alb"
@@ -27,7 +35,7 @@ module "alb" {
 
 module "producer_lambda" {
   source = "./modules/producer_lambda"
-  lambda_role_arn        = var.producer_lambda_role_arn
+  lambda_role_arn        = module.producer_lambda_role.role_arn
   lambda_zip             = var.producer_lambda_zip
   environment_variables  = {
     SQS_QUEUE_URL = module.sqs.queue_url
@@ -41,7 +49,7 @@ module "sqs" {
 
 module "consumer_lambda" {
   source = "./modules/consumer_lambda"
-  lambda_role_arn        = var.consumer_lambda_role_arn
+  lambda_role_arn        = module.consumer_lambda_role.role_arn
   lambda_zip             = var.consumer_lambda_zip
   environment_variables  = {
     DYNAMODB_TABLE_NAME = module.dynamodb.table_name
